@@ -53,4 +53,4 @@ Most calls connect directly with the free STUN server. Some phone networks and o
 
 - One device per account at a time. Signing in somewhere else moves the session there.
 - A person only hears an incoming call while Ringline is open in their browser. It does not ring when the tab is closed.
-- One-to-one calls only. No password reset: keep the SQLite file backed up, and delete a row from `users` if someone is locked out.
+- One to one calls only. No password reset: keep the SQLite file backed up, and delete a row from `users` if someone is locked out.
