@@ -1,30 +1,56 @@
-CoreLine Voice
-​CoreLine Voice is a web based real time peer to peer audio calling application built with Node.js, WebSockets, WebRTC, and SQLite. It enables low latency 1 on 1 voice communication directly between devices with user account management and call signaling.
-​System Architecture and Features
-​Real Time Communication: Direct peer to peer media streaming using the WebRTC API (RTCPeerConnection and getUserMedia).
-​Signaling Engine: WebSocket server handling online status, peer discovery, call requests, answers, and ICE candidate exchanges.
-​Data Storage: Synchronous local data management via better sqlite3 for user accounts and call history.
-​Front End Interface: Native JavaScript and CSS user interface for initiating calls, answering incoming requests, and controlling microphone streams.
-​Dependencies
-​Node.js v18 or higher
-​Node Package Manager
-​Project Structure
-​server.js: HTTP server, WebSocket signaling logic, and SQLite database initialization.
-​public/index.html: Application user interface layout.
-​public/app.js: WebRTC stream handling, microphone access, and WebSocket connection state.
-​public/styles.css: Interface styling and responsive layout rules.
-​Local Installation and Setup
-​Clone the repository:
-git clone https://github.com/Felix-dev560/CoreLine-Voice.git
-​Navigate into the project directory:
-cd CoreLine-Voice
-​Install all required dependencies:
+# Ringline
+
+Voice calls in the browser. Create an account, pick someone from the list, press Call. The other person's screen rings. When they answer, you talk.
+
+## What you need
+
+- Node.js 20, 22 or 24 (LTS recommended)
+- A host that runs Node and serves **https**. Browsers only allow microphone access on https (localhost is the one exception).
+- A disk that survives restarts, for the SQLite file.
+
+## Run it on your computer
+
+```bash
 npm install
-​Launch the application server:
-npm start
-​Access the application in your browser:
-http://localhost:3000
-​Environment Variables
-​Copy env.example to .env if custom environment variables such as PORT or database configuration are required by your deployment target.
-​Deployment Notes
-​When deploying to a public domain, ensure HTTPS is enabled. WebRTC microphone permissions require a secure context to function outside of localhost.
+cp .env.example .env
+npm run dev
+```
+
+Open http://localhost:3000 in two different browsers (or one normal window and one private window), create two accounts, and call one from the other. Use headphones, or the two tabs will echo.
+
+## Put it online
+
+1. Upload the project (without `node_modules`) to your host.
+2. Set these environment variables:
+   - `NODE_ENV=production`
+   - `JWT_SECRET` = 32 or more random characters. Make one with:
+     `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`
+   - `TRUST_PROXY=1`
+   - `DB_PATH` = a path on a persistent disk, for example `/var/data/ringline.db`
+3. Build command: `npm install`. Start command: `npm start`.
+4. Open your https address on two devices and test a call.
+
+The server needs to keep running (not "serverless"), because it holds the live WebSocket connections.
+
+## If calls ring but there is no sound
+
+Most calls connect directly with the free STUN server. Some phone networks and office Wi-Fi block that, and then you need a TURN relay.
+
+- Easiest: a hosted TURN service. Put its URLs in `TURN_URLS` and its login in `TURN_USERNAME` and `TURN_CREDENTIAL`.
+- Self-hosted: run coturn with `use-auth-secret` and `static-auth-secret=<secret>`, then set `TURN_URLS` and `TURN_SECRET` to the same secret. Ringline hands each signed-in user short-lived credentials.
+
+## Files
+
+| File | What it does |
+| --- | --- |
+| `server.js` | Accounts, user list, call signaling over WebSocket |
+| `public/index.html` | The page |
+| `public/styles.css` | The look |
+| `public/app.js` | Sign in, user list, ringing, microphone, WebRTC |
+| `.env.example` | All settings, with notes |
+
+## Limits of this version
+
+- One device per account at a time. Signing in somewhere else moves the session there.
+- A person only hears an incoming call while Ringline is open in their browser. It does not ring when the tab is closed.
+- One-to-one calls only. No password reset: keep the SQLite file backed up, and delete a row from `users` if someone is locked out.
