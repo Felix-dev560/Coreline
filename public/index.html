@@ -1,1 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ringline</title>
+  <meta name="description" content="Make voice calls to other people on Ringline from your browser.">
+  <meta name="theme-color" content="#13211c">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2313211c'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23f0b429'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=Schibsted+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
 
+  <!-- Signed out -->
+  <main id="authView" class="auth" hidden>
+    <section class="auth-intro">
+      <p class="brand">Ringline</p>
+      <h1>Pick a name. Pick a person. Talk.</h1>
+      <p class="lede">Ringline makes voice calls between people who have an account. Open it in any modern browser on your phone or computer. Nothing to install.</p>
+      <ol class="how">
+        <li>Create an account with a username.</li>
+        <li>Choose someone from the list and press Call.</li>
+        <li>When they answer, you are talking. Your phone rings the same way when someone calls you, as long as Ringline is open.</li>
+      </ol>
+    </section>
+
+    <section class="auth-panel" aria-labelledby="authTitle">
+      <h2 id="authTitle" class="visually-hidden">Account</h2>
+      <div class="tabs" role="tablist" aria-label="Account options">
+        <button type="button" role="tab" id="tabLogin" aria-selected="true" aria-controls="authForm">Log in</button>
+        <button type="button" role="tab" id="tabRegister" aria-selected="false" aria-controls="authForm" tabindex="-1">Create account</button>
+      </div>
+
+      <form id="authForm" role="tabpanel" aria-labelledby="tabLogin" novalidate>
+        <div class="field">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="20" required>
+          <p class="hint" id="usernameHint" hidden>3 to 20 characters. Letters, numbers and underscore.</p>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" maxlength="72" required>
+          <p class="hint" id="passwordHint" hidden>At least 8 characters.</p>
+        </div>
+        <p id="authError" class="form-error" role="alert"></p>
+        <button type="submit" class="btn btn-primary" id="authSubmit">Log in</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- Signed in -->
+  <div id="homeView" hidden>
+    <header class="topbar">
+      <p class="brand">Ringline</p>
+      <div class="topbar-right">
+        <p class="conn" id="connStatus" role="status"><span class="dot" aria-hidden="true"></span><span id="connText">Connecting</span></p>
+        <p class="whoami">Signed in as <strong id="meName"></strong></p>
+        <button type="button" class="btn btn-quiet" id="logoutBtn">Log out</button>
+      </div>
+    </header>
+
+    <main class="directory">
+      <h1>Who do you want to call?</h1>
+      <div class="field search">
+        <label for="search">Find a username</label>
+        <input id="search" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="20">
+      </div>
+      <p id="listNote" class="list-note" role="status"></p>
+      <ul id="userList" class="user-list"></ul>
+    </main>
+  </div>
+
+  <!-- Call screen: one dialog, three modes (incoming, outgoing, in call) set by data-mode -->
+  <dialog id="callDialog" class="call" aria-labelledby="callName" data-mode="outgoing">
+    <div class="call-body">
+      <div class="avatar-wrap">
+        <span class="pulse" aria-hidden="true"></span>
+        <span class="avatar" id="callAvatar" aria-hidden="true"></span>
+      </div>
+      <p class="call-kind" id="callKind"></p>
+      <h2 id="callName"></h2>
+      <p class="call-status" id="callStatus" role="status" aria-live="polite"></p>
+
+      <div class="call-actions">
+        <button type="button" class="btn btn-accept" id="acceptBtn">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+          Answer
+        </button>
+        <button type="button" class="btn btn-mute" id="muteBtn" aria-pressed="false">Mute</button>
+        <button type="button" class="btn btn-end" id="endBtn">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="transform:rotate(135deg)"><path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+          <span id="endLabel">Hang up</span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <audio id="remoteAudio" autoplay playsinline></audio>
+  <div id="toast" class="toast" popover="manual" role="status" aria-live="polite"></div>
+
+  <noscript><p style="padding:1rem">Ringline needs JavaScript to make calls.</p></noscript>
+  <script src="/app.js" defer></script>
+</body>
+</html>

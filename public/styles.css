@@ -1,0 +1,258 @@
+/*
+  Ringline styles.
+  Palette (all text pairs checked for WCAG AA):
+    --ink     #13211c  deep green-black, text and call screen
+    --ground  #e6ebe7  cool grey-green page background
+    --paper   #ffffff  form and row surfaces
+    --line    #b9c5bd  borders
+    --signal  #f0b429  amber, used only for ringing and the online dot on dark
+    --go      #17794c  answer button (white text 5.4:1)
+    --stop    #b3261e  hang up / decline (white text 6.5:1)
+  Type: Familjen Grotesk for headings, Schibsted Grotesk for text.
+*/
+
+:root {
+  --ink: #13211c;
+  --ink-soft: #3d4e46;
+  --ground: #e6ebe7;
+  --paper: #ffffff;
+  --line: #b9c5bd;
+  --signal: #f0b429;
+  --go: #17794c;
+  --go-dark: #115c39;
+  --stop: #b3261e;
+  --stop-dark: #8c1d17;
+  --focus: #0b57d0;
+  --font-head: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --space: 1rem;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+}
+
+h1, h2, .brand { font-family: var(--font-head); font-weight: 700; line-height: 1.1; margin: 0; }
+p { margin: 0; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0.7rem 1.4rem;
+  border: 2px solid transparent;
+  border-radius: 0.6rem;
+  font: 600 1rem/1 var(--font-body);
+  cursor: pointer;
+  transition: background-color 120ms ease-out;
+}
+.btn:disabled { cursor: not-allowed; background: #cfd8d2; color: #4b5a52; border-color: #cfd8d2; }
+
+.btn-primary { background: var(--ink); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: #2a4036; }
+
+.btn-quiet { background: transparent; color: #fff; border-color: #6f8a7e; min-height: 2.5rem; padding: 0.5rem 1rem; }
+.btn-quiet:hover { background: #24382f; }
+
+.btn-call { background: var(--go); color: #fff; min-height: 2.75rem; padding: 0.55rem 1.2rem; }
+.btn-call:hover:not(:disabled) { background: var(--go-dark); }
+
+.btn-accept { background: var(--go); color: #fff; }
+.btn-accept:hover { background: var(--go-dark); }
+
+.btn-end { background: var(--stop); color: #fff; }
+.btn-end:hover { background: var(--stop-dark); }
+
+.btn-mute { background: transparent; color: #fff; border-color: #8aa398; }
+.btn-mute:hover { background: #24382f; }
+.btn-mute[aria-pressed="true"] { background: #fff; color: var(--ink); border-color: #fff; }
+
+/* ---------- Fields ---------- */
+
+.field { display: grid; gap: 0.4rem; margin-bottom: 1.1rem; }
+.field label { font-weight: 600; }
+.field input {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.65rem 0.85rem;
+  border: 2px solid #7c8d84;
+  border-radius: 0.5rem;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+}
+.field input:focus-visible { outline-offset: 1px; border-color: var(--focus); }
+.hint { font-size: 0.9375rem; color: var(--ink-soft); }
+.form-error { min-height: 1.5rem; margin-bottom: 0.75rem; color: var(--stop); font-weight: 600; }
+
+/* ---------- Signed-out screen ---------- */
+
+.auth { display: grid; min-height: 100vh; min-height: 100dvh; grid-template-columns: 1fr; }
+
+.auth-intro {
+  background: var(--ink);
+  color: #fff;
+  padding: clamp(1.5rem, 5vw, 4rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.auth-intro .brand { font-size: 1.5rem; }
+.auth-intro h1 { font-size: clamp(2.4rem, 7vw, 4.6rem); letter-spacing: -0.02em; max-width: 14ch; }
+.lede { max-width: 46ch; color: #dbe5df; }
+.how { margin: 0; padding-left: 1.25rem; max-width: 46ch; color: #dbe5df; display: grid; gap: 0.5rem; }
+
+.auth-panel { padding: clamp(1.5rem, 5vw, 4rem); display: grid; align-content: center; }
+.auth-panel > * { width: 100%; max-width: 26rem; margin-inline: auto; }
+
+.tabs { display: grid; grid-template-columns: 1fr 1fr; border: 2px solid var(--ink); border-radius: 0.6rem; overflow: hidden; margin-bottom: 1.5rem; }
+.tabs button {
+  min-height: 3rem; border: 0; background: var(--paper); color: var(--ink);
+  font: 600 1rem/1 var(--font-body); cursor: pointer;
+  transition: background-color 120ms ease-out;
+}
+.tabs button:hover { background: #dfe7e2; }
+.tabs button[aria-selected="true"] { background: var(--ink); color: #fff; }
+.tabs button:focus-visible { outline-offset: -5px; outline-color: var(--focus); }
+.tabs button[aria-selected="true"]:focus-visible { outline-color: #fff; }
+
+#authForm .btn { width: 100%; }
+
+@media (min-width: 60rem) {
+  .auth { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+}
+
+/* ---------- Signed-in screen ---------- */
+
+.topbar {
+  background: var(--ink);
+  color: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  padding: 0.9rem clamp(1rem, 4vw, 2.5rem);
+}
+.topbar .brand { font-size: 1.35rem; }
+.topbar-right { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.25rem; }
+.whoami { color: #dbe5df; }
+.whoami strong { color: #fff; }
+
+.conn { display: inline-flex; align-items: center; gap: 0.5rem; color: #dbe5df; font-size: 0.9375rem; }
+.dot { width: 0.7rem; height: 0.7rem; border-radius: 50%; border: 2px solid currentColor; display: inline-block; flex: none; }
+.conn.is-on .dot { background: var(--signal); border-color: var(--signal); }
+
+.directory { max-width: 44rem; margin: 0 auto; padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 2rem) 4rem; }
+.directory h1 { font-size: clamp(1.9rem, 5vw, 2.8rem); letter-spacing: -0.015em; margin-bottom: 1.5rem; }
+.search { max-width: 22rem; margin-bottom: 0.75rem; }
+.list-note { min-height: 1.6rem; color: var(--ink-soft); margin-bottom: 0.5rem; }
+
+.user-list { list-style: none; margin: 0; padding: 0; background: var(--paper); border: 2px solid var(--ink); border-radius: 0.75rem; }
+.user-list:empty { display: none; }
+.user-row { display: flex; align-items: center; gap: 1rem; padding: 0.85rem 1rem; }
+.user-row + .user-row { border-top: 1px solid var(--line); }
+.user-row .avatar-sm {
+  flex: none; width: 2.75rem; height: 2.75rem; border-radius: 50%;
+  display: grid; place-items: center;
+  background: #dfe7e2; color: var(--ink);
+  font: 700 1.15rem/1 var(--font-head);
+}
+.user-main { flex: 1; min-width: 0; }
+.user-name { font-weight: 600; overflow-wrap: anywhere; }
+.user-state { display: flex; align-items: center; gap: 0.45rem; font-size: 0.9375rem; color: var(--ink-soft); }
+.user-state .dot { width: 0.6rem; height: 0.6rem; }
+.user-row.is-online .user-state { color: var(--go-dark); font-weight: 600; }
+.user-row.is-online .dot { background: var(--go); border-color: var(--go); }
+
+/* ---------- Call screen ---------- */
+
+.call {
+  width: 100%; height: 100%; max-width: none; max-height: none;
+  margin: 0; padding: 0; border: 0;
+  background: var(--ink); color: #fff;
+}
+.call::backdrop { background: var(--ink); }
+.call[open] { display: grid; place-items: center; }
+
+.call-body {
+  width: 100%; max-width: 26rem;
+  padding: 2rem 1.5rem calc(2rem + env(safe-area-inset-bottom));
+  display: grid; justify-items: center; text-align: center; gap: 0.5rem;
+}
+.avatar-wrap { position: relative; width: 9rem; height: 9rem; display: grid; place-items: center; margin-bottom: 1.25rem; }
+.avatar {
+  position: relative; z-index: 1;
+  width: 7rem; height: 7rem; border-radius: 50%;
+  display: grid; place-items: center;
+  background: #fff; color: var(--ink);
+  font: 700 3rem/1 var(--font-head);
+}
+.pulse { position: absolute; inset: 0; border-radius: 50%; border: 3px solid var(--signal); opacity: 0; }
+
+/* The ring sign: only while ringing, and only if the person has not asked for less motion. */
+.call[data-phase="ringing"] .pulse { animation: ring-pulse 1.6s ease-out infinite; }
+.call[data-phase="ringing"] .avatar { box-shadow: 0 0 0 6px var(--signal); }
+@keyframes ring-pulse {
+  from { transform: scale(0.78); opacity: 0.95; }
+  to   { transform: scale(1.18); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .call[data-phase="ringing"] .pulse { animation: none; opacity: 1; }
+}
+
+.call-kind { font-size: 1.05rem; font-weight: 600; color: var(--signal); }
+.call h2 { font-size: clamp(2rem, 9vw, 2.8rem); overflow-wrap: anywhere; }
+.call-status { min-height: 1.6rem; color: #dbe5df; font-variant-numeric: tabular-nums; }
+
+.call-actions { margin-top: 1.75rem; display: grid; gap: 0.75rem; width: 100%; grid-template-columns: 1fr 1fr; }
+.call-actions .btn { min-height: 3.5rem; font-size: 1.05rem; }
+
+/* Which buttons show in which mode. */
+.call-actions > * { display: none; }
+.call[data-mode="incoming"] #acceptBtn,
+.call[data-mode="incoming"] #endBtn,
+.call[data-mode="active"] #muteBtn,
+.call[data-mode="active"] #endBtn { display: inline-flex; }
+.call[data-mode="outgoing"] #endBtn { display: inline-flex; grid-column: 1 / -1; }
+
+/* ---------- Toast ---------- */
+
+.toast {
+  /* popover="manual" puts the toast in the top layer so it shows above the call dialog. */
+  position: fixed; inset: auto; margin: 0;
+  left: 50%; bottom: calc(1.25rem + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  width: min(90vw, 28rem);
+  padding: 0.85rem 1.1rem;
+  background: var(--ink); color: #fff;
+  border: 2px solid #fff; border-radius: 0.6rem;
+  font-weight: 600; text-align: center;
+}
